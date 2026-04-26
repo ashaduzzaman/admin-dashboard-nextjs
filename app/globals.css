@@ -1,26 +1,144 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-manrope: "Manrope", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html.dark {
+  --primary: #00f0ff;
+  --background-dark: #070b14;
+  --surface: #111827;
+  --surface-highlight: #1f2937;
+  --text-primary: #f9fafb;
+  --muted: #9ca3af;
+  --accent-success: #00ff85;
+  --accent-error: #ff2a5f;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html.light {
+  --primary: #00c2cc;
+  --background-dark: #ffffff;
+  --surface: #ffffff;
+  --surface-highlight: #e5e7eb;
+  --text-primary: #111827;
+  --muted: #6b7280;
+  --accent-success: #059669;
+  --accent-error: #dc2626;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+  font-family: var(--font-manrope);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* High Contrast Mode */
+html.high-contrast {
+  --primary-contrast: #0080ff;
+  --text-contrast: #000000;
+  --background-contrast: #ffffff;
+  --error-contrast: #ff0000;
+  --success-contrast: #008000;
+}
+
+html.dark.high-contrast {
+  --primary: #00d4ff;
+  --text-primary: #ffffff;
+  --background-dark: #000000;
+  --surface: #1a1a1a;
+  --accent-error: #ff4444;
+  --accent-success: #44ff44;
+}
+
+html.light.high-contrast {
+  --primary: #0066cc;
+  --text-primary: #000000;
+  --background-dark: #ffffff;
+  --surface: #f0f0f0;
+  --accent-error: #cc0000;
+  --accent-success: #006600;
+}
+
+html.high-contrast .glass-panel {
+  border-width: 2px;
+}
+
+html.high-contrast button,
+html.high-contrast input,
+html.high-contrast a {
+  border-width: 2px;
+}
+
+.glass-panel {
+  background: var(--surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--surface-highlight);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+html.dark .glass-panel {
+  background: rgba(17, 24, 39, 0.7);
+}
+
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.neon-border-hover:hover {
+  border-color: var(--primary);
+}
+
+html.dark .neon-border-hover:hover {
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+html.light .neon-border-hover:hover {
+  box-shadow: 0 0 10px rgba(0, 194, 204, 0.2);
+}
+
+input,
+textarea,
+select {
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+  border-color: var(--surface-highlight);
+  transition: all 0.3s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(152, 163, 175, 0.5);
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: rgba(107, 114, 128, 0.5);
+}
+
+.sidebar-active {
+  border-left: 2px solid var(--primary);
+  background: rgba(0, 240, 255, 0.05);
+}
+
+html.light .sidebar-active {
+  background: rgba(0, 194, 204, 0.05);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
 }

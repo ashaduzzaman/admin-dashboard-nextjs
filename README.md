@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Command Center - Admin Dashboard
+
+A modern SaaS admin dashboard built with Next.js 15, Tailwind CSS, and Material Symbols.
+
+## Features
+
+- 🎨 Dark theme with cyan accent colors
+- 🎭 Glass panel design with backdrop blur
+- 📊 Metric cards with charts and indicators
+- 🔔 System alerts and notifications
+- ⚙️ Settings page with API key management
+- 📱 Responsive design
+- ✨ Smooth animations and transitions
+
+## Tech Stack
+
+- **Framework**: Next.js 15+ (App Router)
+- **Styling**: Tailwind CSS 3.4+
+- **Icons**: Material Symbols Outlined (Google Fonts)
+- **Fonts**: Manrope (display/body), JetBrains Mono (monospace)
+- **Language**: TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Run the development server:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+app/
+├── components/
+│   ├── Sidebar.tsx
+│   ├── TopNav.tsx
+│   ├── MetricCard.tsx
+│   ├── SystemAlerts.tsx
+│   ├── ThroughputChart.tsx
+│   └── settings/
+│       ├── APIKeysTable.tsx
+│       ├── AccessControlForm.tsx
+│       └── DangerZone.tsx
+├── settings/
+│   └── page.tsx
+├── types/
+│   └── index.ts
+├── globals.css
+├── layout.tsx
+└── page.tsx
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Color Palette
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Token               | Value     | Usage                             |
+| ------------------- | --------- | --------------------------------- |
+| `primary`           | `#00F0FF` | Accent color, active states, CTAs |
+| `background-dark`   | `#070B14` | Page background                   |
+| `surface`           | `#111827` | Card backgrounds                  |
+| `surface-highlight` | `#1F2937` | Borders, hover states             |
+| `text-primary`      | `#F9FAFB` | Primary text                      |
+| `muted`             | `#9CA3AF` | Secondary text                    |
+| `accent-success`    | `#00FF85` | Success states, positive metrics  |
+| `accent-error`      | `#FF2A5F` | Error states, critical alerts     |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Pages
 
-## Deploy on Vercel
+- **Dashboard** (`/`) - Main command center with metrics and system alerts
+- **Settings** (`/settings`) - API keys, access control, and danger zone
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Build & Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Build for production:
+```bash
+npm run build
+npm start
+```
+
+## Environment Variables
+
+Create a `.env.local` file if needed:
+```bash
+# Add environment variables here
+```
+
+## License
+
+MIT
