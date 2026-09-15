@@ -36,7 +36,8 @@ See `PLAN.md` §4 Phase 0. Its own `feature/ci-github-actions` branch, per the g
 
 - [ ] **Not yet verified against a real PR/push** — pushed but unconfirmed until GitHub Actions actually runs it once
 - [ ] Tell the user to mark checks as required on `dev`, `staging`, and `main` in GitHub repo settings — **immediate next step once the PR merges**
-- [ ] **Deliberately not built — needs the user's infrastructure decisions first:** `deploy-*.yml` workflows and Playwright E2E (no real login flow to test yet — Phase 3)
+- [x] **Confirmed with the user (2026-09-15): hosting not decided yet — `deploy-*.yml` workflows stay unbuilt for now.** Not a gap: the Docker build+Trivy-scan+push to GHCR stands on its own — deploy just picks up the already-published image once hosting is chosen. Don't re-litigate this.
+- [ ] Playwright E2E — still deferred, unrelated to the hosting question: nothing to meaningfully test until there's a real login flow (Phase 3).
 
 ## Phase 1 — Layout & UI foundation, ported from `RIS-app-frontend`
 
