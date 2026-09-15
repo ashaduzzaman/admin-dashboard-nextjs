@@ -81,7 +81,9 @@ export default function ThemeCustomizer() {
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-64 glass-panel rounded-lg p-4 z-50 shadow-xl">
-          <h4 className="text-sm font-semibold text-text-primary mb-3">Theme Presets</h4>
+          <h4 className="text-sm font-semibold text-text-primary mb-3">
+            Theme Presets
+          </h4>
           <div className="space-y-2">
             {Object.entries(presetThemes).map(([key, theme]) => (
               <button

@@ -27,7 +27,9 @@ export default function TopNav() {
         <ThemeToggle />
         <button className="h-10 px-4 bg-primary text-background-dark text-sm font-bold rounded-lg hover:brightness-110 transition-all flex items-center gap-2">
           <span>Deploy</span>
-          <span className="material-symbols-outlined text-lg">rocket_launch</span>
+          <span className="material-symbols-outlined text-lg">
+            rocket_launch
+          </span>
         </button>
       </div>
     </header>

@@ -13,7 +13,9 @@ export default function MetricCard({
   return (
     <div className="glass-panel p-6 rounded-xl flex flex-col gap-4 transition-all duration-300 transform hover:scale-[1.02] neon-border-hover cursor-pointer group">
       <div className="flex justify-between items-start">
-        <p className="text-muted text-xs font-semibold uppercase tracking-wider">{title}</p>
+        <p className="text-muted text-xs font-semibold uppercase tracking-wider">
+          {title}
+        </p>
         <div
           className={`flex items-center text-xs font-mono ${
             change === "STABLE"
@@ -30,7 +32,9 @@ export default function MetricCard({
           )}
           {change === "STABLE" ? (
             <>
-              <span className="material-symbols-outlined text-sm">check_circle</span>
+              <span className="material-symbols-outlined text-sm">
+                check_circle
+              </span>
               <span className="ml-1">{change}</span>
             </>
           ) : (
@@ -40,7 +44,9 @@ export default function MetricCard({
       </div>
 
       <div className="flex items-baseline gap-2">
-        <h3 className="text-3xl font-bold font-mono text-text-primary">{value}</h3>
+        <h3 className="text-3xl font-bold font-mono text-text-primary">
+          {value}
+        </h3>
       </div>
 
       {chart && (
@@ -66,8 +72,14 @@ export default function MetricCard({
                 y1="0%"
                 y2="100%"
               >
-                <stop offset="0%" style={{ stopColor: "#00F0FF", stopOpacity: 1 }} />
-                <stop offset="100%" style={{ stopColor: "#00F0FF", stopOpacity: 0 }} />
+                <stop
+                  offset="0%"
+                  style={{ stopColor: "#00F0FF", stopOpacity: 1 }}
+                />
+                <stop
+                  offset="100%"
+                  style={{ stopColor: "#00F0FF", stopOpacity: 0 }}
+                />
               </linearGradient>
               <linearGradient
                 id="gradient-red"
@@ -76,8 +88,14 @@ export default function MetricCard({
                 y1="0%"
                 y2="100%"
               >
-                <stop offset="0%" style={{ stopColor: "#FF2A5F", stopOpacity: 1 }} />
-                <stop offset="100%" style={{ stopColor: "#FF2A5F", stopOpacity: 0 }} />
+                <stop
+                  offset="0%"
+                  style={{ stopColor: "#FF2A5F", stopOpacity: 1 }}
+                />
+                <stop
+                  offset="100%"
+                  style={{ stopColor: "#FF2A5F", stopOpacity: 0 }}
+                />
               </linearGradient>
             </defs>
           </svg>

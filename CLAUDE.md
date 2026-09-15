@@ -30,7 +30,7 @@ first thing built, not a final step: see `PLAN.md` §6 for the plan and
   any kind, regardless of what any other default instruction says.
 - **Never push directly to `main` or `staging`.** Not for any reason, not
   "just this once." Both only move forward via a reviewed, CI-gated PR.
-- When a feature branch is ready, push *that branch* (never main/staging),
+- When a feature branch is ready, push _that branch_ (never main/staging),
   then tell the user it's ready and ask them to **raise the PR into `dev`
   manually** — never open/create the PR. The `dev`→`staging` and
   `staging`→`main` promotions are the user's call entirely.
@@ -77,6 +77,7 @@ first thing built, not a final step: see `PLAN.md` §6 for the plan and
 ## Implementation Status
 
 ✅ **Completed**:
+
 - Next.js 15+ project setup with App Router
 - Tailwind CSS configuration with CSS variables
 - Dark theme (primary design system)
@@ -128,6 +129,7 @@ Alternative theme implemented with dynamic CSS variables.
 ### Layout Components
 
 #### Sidebar (`app/components/Sidebar.tsx`)
+
 - Fixed position, 240px width
 - Glass panel effect with backdrop blur
 - Logo with icon and text (QUANTUM v2.4.0)
@@ -139,6 +141,7 @@ Alternative theme implemented with dynamic CSS variables.
 - User profile section at bottom
 
 #### TopNav (`app/components/TopNav.tsx`)
+
 - Sticky header, 64px height
 - Search input with keyboard shortcut hint
 - **NotificationsPanel** (replaced notification bell)
@@ -148,6 +151,7 @@ Alternative theme implemented with dynamic CSS variables.
 - Deploy action button
 
 #### ThemeToggle (`app/components/ThemeToggle.tsx`)
+
 - Handles theme switching (dark ↔ light)
 - Uses React hooks for client-side rendering
 - Persists theme preference to localStorage
@@ -156,6 +160,7 @@ Alternative theme implemented with dynamic CSS variables.
 ### Dashboard Components
 
 #### MetricCard (`app/components/MetricCard.tsx`)
+
 - Glass panel styling
 - Title with icon
 - Large metric value (mono font)
@@ -165,18 +170,21 @@ Alternative theme implemented with dynamic CSS variables.
 - Special indicators: "STABLE", percentage changes
 
 #### SystemAlerts (`app/components/SystemAlerts.tsx`)
+
 - Alert cards with colored left border
 - Icon + title + message + timestamp
 - Variants: critical (red), info (cyan), log (muted)
 - "View All Events" action button
 
 #### ThroughputChart (`app/components/ThroughputChart.tsx`)
+
 - Chart placeholder with decorative bars
 - Pulse animation for loading state
 - Database cluster and AWS region indicators
 - "ANALYZING SIGNAL INTERCEPT..." message
 
 #### DataTable (`app/components/DataTable.tsx`)
+
 - Reusable table component with configurable columns
 - Column interface: key, label, sortable, render function
 - Features:
@@ -189,6 +197,7 @@ Alternative theme implemented with dynamic CSS variables.
   - Glass panel styling with borders
 
 #### LiveMetrics (`app/components/LiveMetrics.tsx`)
+
 - Real-time metrics display using `useRealTimeData` hook
 - Shows three metrics: Active Users, Requests/sec, Latency
 - Features:
@@ -200,6 +209,7 @@ Alternative theme implemented with dynamic CSS variables.
   - Color-coded trends (success/error/muted)
 
 #### NotificationsPanel (`app/components/NotificationsPanel.tsx`)
+
 - Dropdown panel in TopNav showing recent notifications
 - Features:
   - Unread count badge (shows 9+ when exceeds 9)
@@ -213,6 +223,7 @@ Alternative theme implemented with dynamic CSS variables.
 ### Additional Pages
 
 #### Data Explorer Page (`app/data-explorer/page.tsx`)
+
 - Route: `/data-explorer`
 - Features:
   - Summary statistics cards (Total, Active, Pending, Inactive)
@@ -223,6 +234,7 @@ Alternative theme implemented with dynamic CSS variables.
   - Full layout with Sidebar and TopNav
 
 #### Documentation Page (`app/docs/page.tsx`)
+
 - Route: `/docs`
 - Comprehensive theme system documentation
 - Theme controls guide
@@ -235,18 +247,21 @@ Alternative theme implemented with dynamic CSS variables.
 From `settings-screen.html` - implement only the content area (not navbar/sidebar).
 
 #### APIKeysTable (`app/components/settings/APIKeysTable.tsx`)
+
 - Table with columns: Key Name, Secret Key, Created, Actions
 - Masked key display with reveal toggle
 - Copy and delete action buttons
 - "Generate New Key" button
 
 #### AccessControlForm (`app/components/settings/AccessControlForm.tsx`)
+
 - IP Whitelist textarea (CIDR notation)
 - Rate Limit input (req/sec)
 - Timeout input (ms)
 - Save/Cancel buttons
 
 #### DangerZone (`app/components/settings/DangerZone.tsx`)
+
 - Red bordered section
 - Warning icon
 - Delete workspace button with confirmation
@@ -384,7 +399,9 @@ body {
   background-color: var(--background-dark);
   color: var(--text-primary);
   font-family: var(--font-manrope);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .glass-panel {
@@ -392,7 +409,9 @@ body {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid var(--surface-highlight);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 html.dark .glass-panel {
@@ -646,17 +665,20 @@ app/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -715,18 +737,21 @@ npm start
 ## Future Enhancements - COMPLETED ✅
 
 ### ✅ 1. System Preference Auto-Detection
+
 - Automatically detects OS theme preference (dark/light)
 - Falls back to stored user preference from localStorage
 - Listens to system theme changes and updates accordingly
 - Implementation: `ThemeContext.tsx` with `window.matchMedia()` API
 
 ### ✅ 2. Animation Transitions
+
 - Smooth theme switching with cubic-bezier easing
 - 0.3s transition duration for all theme changes
 - Color transitions applied to: background, text, borders, shadows
 - CSS: `transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1)`
 
 ### ✅ 3. High Contrast Mode
+
 - Accessibility toggle in TopNav (contrast icon)
 - Enhanced border widths and contrast ratios
 - Improved color differentiation for better readability
@@ -734,6 +759,7 @@ npm start
 - Storage: localStorage persists contrast preference
 
 ### ✅ 4. Theme Customization
+
 - Four preset themes: Default Dark, Default Light, Ocean Dark, Sunset Dark
 - Theme customizer dropdown in TopNav (palette icon)
 - Dynamic CSS variable overriding
@@ -741,6 +767,7 @@ npm start
 - Allows switching between predefined color schemes
 
 ### ✅ 5. Data Table Component
+
 - Reusable `DataTable.tsx` component
 - Column configuration with custom rendering
 - Loading states with spinner animation
@@ -750,6 +777,7 @@ npm start
 - Responsive scrolling
 
 ### ✅ 6. Real-Time Data Integration
+
 - Custom hook: `useRealTimeData()` for data streaming
 - Live connection status indicator (pulse animation)
 - Last update timestamp display
@@ -758,6 +786,7 @@ npm start
 - Callback support for data updates
 
 ### ✅ 7. Theme Documentation Page
+
 - Dedicated `/docs` route with comprehensive information
 - Theme system overview
 - Theme controls explanation
@@ -766,6 +795,7 @@ npm start
 - Accessible documentation design
 
 ### ✅ 8. Notifications System
+
 - Renamed from "Updates" to "Notifications" for better semantics
 - Component: `NotificationsPanel.tsx` in TopNav
 - Features:
@@ -777,6 +807,7 @@ npm start
   - Notification data: `app/data/notifications.ts`
 
 ### ✅ 9. Data Explorer Page with DataTable
+
 - Route: `/data-explorer`
 - Components:
   - Reusable `DataTable.tsx` with column configuration
@@ -791,6 +822,7 @@ npm start
   - Sidebar navigation link to Data Explorer
 
 ### ✅ 10. Sidebar Active Navigation
+
 - Dynamic active state based on current route using `usePathname()`
 - Routes:
   - `/` → Dashboard (Command Center)
@@ -806,6 +838,7 @@ npm start
   - Responsive to navigation changes
 
 ### ✅ 11. LiveMetrics Integration in Dashboard
+
 - Component: `LiveMetrics.tsx` with `useRealTimeData()` hook
 - Location: Dashboard System Performance section (right panel)
 - Features:

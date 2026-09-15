@@ -19,18 +19,24 @@ export default function SettingsPage() {
             <h1 className="text-3xl font-extrabold tracking-tight text-text-primary font-display mb-2">
               Settings
             </h1>
-            <p className="text-muted">Manage your account, API keys, and security settings.</p>
+            <p className="text-muted">
+              Manage your account, API keys, and security settings.
+            </p>
           </div>
 
           <section className="glass-panel rounded-lg p-8 mb-8">
             <h2 className="text-xl font-bold mb-2">API Keys</h2>
-            <p className="text-muted text-sm mb-4">Manage integration keys for programmatic access.</p>
+            <p className="text-muted text-sm mb-4">
+              Manage integration keys for programmatic access.
+            </p>
             <APIKeysTable />
           </section>
 
           <section className="glass-panel rounded-lg p-8 mb-8">
             <h2 className="text-xl font-bold mb-2">Access Control</h2>
-            <p className="text-muted text-sm mb-4">Configure IP whitelisting and rate limits.</p>
+            <p className="text-muted text-sm mb-4">
+              Configure IP whitelisting and rate limits.
+            </p>
             <AccessControlForm />
           </section>
 

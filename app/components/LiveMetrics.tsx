@@ -46,7 +46,9 @@ export default function LiveMetrics() {
         <div className="flex items-center gap-2">
           <div
             className={`w-2 h-2 rounded-full ${
-              isConnected ? "bg-accent-success animate-pulse" : "bg-accent-error"
+              isConnected
+                ? "bg-accent-success animate-pulse"
+                : "bg-accent-error"
             }`}
           />
           <span className="text-xs text-muted">
@@ -57,7 +59,10 @@ export default function LiveMetrics() {
 
       <div className="space-y-4">
         {metrics.map((metric) => (
-          <div key={metric.label} className="flex items-between justify-between pb-4 border-b border-surface-highlight/30">
+          <div
+            key={metric.label}
+            className="flex items-between justify-between pb-4 border-b border-surface-highlight/30"
+          >
             <div className="flex-1">
               <p className="text-sm text-muted font-medium">{metric.label}</p>
               <div className="flex items-baseline gap-2 mt-1">
@@ -78,13 +83,19 @@ export default function LiveMetrics() {
                 }`}
               >
                 {metric.trend === "up" && (
-                  <span className="material-symbols-outlined text-sm">arrow_upward</span>
+                  <span className="material-symbols-outlined text-sm">
+                    arrow_upward
+                  </span>
                 )}
                 {metric.trend === "down" && (
-                  <span className="material-symbols-outlined text-sm">arrow_downward</span>
+                  <span className="material-symbols-outlined text-sm">
+                    arrow_downward
+                  </span>
                 )}
                 {metric.trend === "stable" && (
-                  <span className="material-symbols-outlined text-sm">trending_flat</span>
+                  <span className="material-symbols-outlined text-sm">
+                    trending_flat
+                  </span>
                 )}
                 {metric.percentage}%
               </div>

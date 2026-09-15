@@ -28,20 +28,20 @@ this plan:
 
 This is not a small integration task — it's closer to repurposing a themed
 shell around a different domain. The plan below is scoped so that what
-*does* map cleanly (auth, users, roles) gets wired first and for real,
+_does_ map cleanly (auth, users, roles) gets wired first and for real,
 while what doesn't (system-monitoring widgets) is explicitly parked rather
 than silently left as fake data pretending to be real.
 
 ## 1. Decisions
 
-| Decision | Choice | Why |
-|---|---|---|
-| Backend access pattern | **Next.js Route Handlers as a server-side proxy** (`app/api/**/route.ts` → `fetch` to `API_BASE_URL`) | The backend's auth is httpOnly cookies. Calling it directly from the browser means cross-origin cookies (`SameSite=None; Secure`, HTTPS even in dev) — solvable but fragile. Proxying means the browser only ever talks to the Next.js origin; Next.js's server relays the backend's `Set-Cookie` header back to the browser as its own. No CORS configuration needed on either side for this path. |
-| Backend URL config | `API_BASE_URL` (server-only env var, **not** `NEXT_PUBLIC_*`) | The client bundle never needs to know where the Express API lives — only the Next.js server does, inside route handlers / Server Components / Server Actions. |
-| Data fetching style | Server Components + Server Actions where possible, thin route-handler proxies where a client component needs imperative calls (e.g. a login form submit) | Matches Next.js 15 App Router idioms; avoids a client-side data-fetching library (SWR/React Query) that this template doesn't have and doesn't need yet for CRUD-shaped pages. |
-| Visual identity | **Keep the glass-panel dark theme and component primitives** (`MetricCard`, `DataTable`, `Sidebar`, `TopNav`, theme system). Repurpose their *content*, don't rebuild the design system. | The theme work is genuinely polished and reusable; the mismatch is domain (infra-monitoring vs. SaaS tenant admin), not visual quality. |
-| Out-of-scope widgets | `ThroughputChart`, `SystemAlerts`, `LiveMetrics` — **parked, not deleted, not wired to fake-real data.** | No backend module backs these (no metrics/audit-log API exists — see backend `MODULES.md` §5). Wiring them to anything now would mean inventing fake "real" data, which is worse than clearly-fake placeholder data. Revisit once the backend has an audit-log or metrics module. |
-| Testing | Vitest + React Testing Library for components/logic, Playwright (or a Next.js-native equivalent) for the auth flow E2E — **write the test before the implementation**, same discipline as the backend. | Carrying forward the backend's TDD requirement; a login flow with cookie handling is exactly the kind of thing that's easy to believe works and actually doesn't. |
+| Decision               | Choice                                                                                                                                                                                                 | Why                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend access pattern | **Next.js Route Handlers as a server-side proxy** (`app/api/**/route.ts` → `fetch` to `API_BASE_URL`)                                                                                                  | The backend's auth is httpOnly cookies. Calling it directly from the browser means cross-origin cookies (`SameSite=None; Secure`, HTTPS even in dev) — solvable but fragile. Proxying means the browser only ever talks to the Next.js origin; Next.js's server relays the backend's `Set-Cookie` header back to the browser as its own. No CORS configuration needed on either side for this path. |
+| Backend URL config     | `API_BASE_URL` (server-only env var, **not** `NEXT_PUBLIC_*`)                                                                                                                                          | The client bundle never needs to know where the Express API lives — only the Next.js server does, inside route handlers / Server Components / Server Actions.                                                                                                                                                                                                                                       |
+| Data fetching style    | Server Components + Server Actions where possible, thin route-handler proxies where a client component needs imperative calls (e.g. a login form submit)                                               | Matches Next.js 15 App Router idioms; avoids a client-side data-fetching library (SWR/React Query) that this template doesn't have and doesn't need yet for CRUD-shaped pages.                                                                                                                                                                                                                      |
+| Visual identity        | **Keep the glass-panel dark theme and component primitives** (`MetricCard`, `DataTable`, `Sidebar`, `TopNav`, theme system). Repurpose their _content_, don't rebuild the design system.               | The theme work is genuinely polished and reusable; the mismatch is domain (infra-monitoring vs. SaaS tenant admin), not visual quality.                                                                                                                                                                                                                                                             |
+| Out-of-scope widgets   | `ThroughputChart`, `SystemAlerts`, `LiveMetrics` — **parked, not deleted, not wired to fake-real data.**                                                                                               | No backend module backs these (no metrics/audit-log API exists — see backend `MODULES.md` §5). Wiring them to anything now would mean inventing fake "real" data, which is worse than clearly-fake placeholder data. Revisit once the backend has an audit-log or metrics module.                                                                                                                   |
+| Testing                | Vitest + React Testing Library for components/logic, Playwright (or a Next.js-native equivalent) for the auth flow E2E — **write the test before the implementation**, same discipline as the backend. | Carrying forward the backend's TDD requirement; a login flow with cookie handling is exactly the kind of thing that's easy to believe works and actually doesn't.                                                                                                                                                                                                                                   |
 
 ## 2. Integration contract
 
@@ -66,16 +66,16 @@ than silently left as fake data pretending to be real.
 
 ## 3. Page-to-endpoint mapping
 
-| Page | Backend endpoint(s) | Notes |
-|---|---|---|
-| **Login** (new) | `POST /api/v1/auth/login` | Fields: tenantSlug, email, password. |
-| **Register / create workspace** (new) | `POST /api/v1/auth/register` | Fields: tenantName, tenantSlug, email, password, name. |
-| **Dashboard shell** (`app/page.tsx`, repurposed) | `GET /api/v1/auth/me` | Drives the identity shown in `Sidebar`'s user section and gates the whole authenticated layout. |
-| **Data Explorer → Users** (`app/data-explorer/`, repurposed) | `GET/POST/PUT/DELETE /api/v1/users`, `PUT /api/v1/users/:id/password` | The existing `DataTable` component is a good fit as-is — swap the hardcoded 6-row array for a real fetch. Gate create/edit/delete controls on `users:create`/`users:update`/`users:delete`. |
-| **Settings → Roles & permissions** (`app/settings/`, repurposed) | `GET/POST/PUT/DELETE /api/v1/roles`, `GET /api/v1/roles/permissions` | Replaces the current API-Keys/Access-Control/Danger-Zone content (none of which has a backend counterpart — see below) with real role management. |
-| **Settings → API Keys, Access Control, Danger Zone** (existing) | *(none — no backend module yet)* | Per `MODULES.md`: no API-key module, no per-tenant access-control/rate-limit config, no tenant-deletion endpoint. Leave clearly marked as "coming soon" / disabled rather than functional-looking against nothing. |
-| `ThroughputChart`, `SystemAlerts`, `LiveMetrics`, `NotificationsPanel` | *(none)* | Parked per §1. `NotificationsPanel` specifically could eventually back onto a real notifications module (explicitly deferred on the backend too — same module, same timeline). |
-| `/docs` page | n/a | Internal theme documentation; unaffected by this work. |
+| Page                                                                   | Backend endpoint(s)                                                   | Notes                                                                                                                                                                                                              |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Login** (new)                                                        | `POST /api/v1/auth/login`                                             | Fields: tenantSlug, email, password.                                                                                                                                                                               |
+| **Register / create workspace** (new)                                  | `POST /api/v1/auth/register`                                          | Fields: tenantName, tenantSlug, email, password, name.                                                                                                                                                             |
+| **Dashboard shell** (`app/page.tsx`, repurposed)                       | `GET /api/v1/auth/me`                                                 | Drives the identity shown in `Sidebar`'s user section and gates the whole authenticated layout.                                                                                                                    |
+| **Data Explorer → Users** (`app/data-explorer/`, repurposed)           | `GET/POST/PUT/DELETE /api/v1/users`, `PUT /api/v1/users/:id/password` | The existing `DataTable` component is a good fit as-is — swap the hardcoded 6-row array for a real fetch. Gate create/edit/delete controls on `users:create`/`users:update`/`users:delete`.                        |
+| **Settings → Roles & permissions** (`app/settings/`, repurposed)       | `GET/POST/PUT/DELETE /api/v1/roles`, `GET /api/v1/roles/permissions`  | Replaces the current API-Keys/Access-Control/Danger-Zone content (none of which has a backend counterpart — see below) with real role management.                                                                  |
+| **Settings → API Keys, Access Control, Danger Zone** (existing)        | _(none — no backend module yet)_                                      | Per `MODULES.md`: no API-key module, no per-tenant access-control/rate-limit config, no tenant-deletion endpoint. Leave clearly marked as "coming soon" / disabled rather than functional-looking against nothing. |
+| `ThroughputChart`, `SystemAlerts`, `LiveMetrics`, `NotificationsPanel` | _(none)_                                                              | Parked per §1. `NotificationsPanel` specifically could eventually back onto a real notifications module (explicitly deferred on the backend too — same module, same timeline).                                     |
+| `/docs` page                                                           | n/a                                                                   | Internal theme documentation; unaffected by this work.                                                                                                                                                             |
 
 ## 4. Phased build order
 
@@ -88,32 +88,63 @@ after Phase 1 (or later) has already accumulated ungated merges.
 
 ### Phase 0 — CI/CD (GitHub Actions gating every PR)
 
-**Plan below; implement this before Phase 1.** Its own
-`feature/ci-github-actions` branch, PR'd for review like everything else,
-but it goes first.
+Its own `feature/ci-github-actions` branch, PR'd for review like everything
+else, but it goes first. Expanded past the original sketch after the user
+reviewed a first draft and asked for the fuller foundation+dev+staging tier
+before merging — see the backend's `PLAN.md` §16 for the fuller version of
+the same design; this one is smaller only because there's no database and
+no test tooling yet, not because the process differs.
 
-- **Trigger:** `pull_request` targeting `dev`, `staging`, **or** `main` —
-  one workflow, three target branches, same checks at every promotion.
-- **Jobs, in order that makes sense today (this repo has zero tests until
-  Phase 1 lands Vitest + RTL):**
-  1. `lint` — `npm ci && npm run lint`.
-  2. `build` — `npm run build`. Next.js's production build runs a full
-     TypeScript typecheck as part of it, so this catches type errors and
-     broken imports even before dedicated tests exist — cheap and worth
-     having from day one, unlike `test`.
-  3. `test` — **added once Phase 1's testing tooling actually exists**, not
-     before. A green check that runs zero tests is worse than no check —
-     don't stand this job up until there's something real for it to run.
-- **Node version:** match whatever this repo settles on (check for an
-  `.nvmrc` once one exists; Next.js 15 wants Node ≥18.18).
-- **Branch protection:** once the workflow file exists, the user needs to
-  mark these checks "required" on `dev`, `staging`, and `main` in GitHub's
+### `ci.yml` — every PR, all three target branches
+
+**Trigger:** `pull_request` targeting `dev`, `staging`, **or** `main` — one
+workflow, three target branches, same checks at every promotion.
+`concurrency` + `cancel-in-progress` so a new push supersedes a stale run.
+
+**Jobs (all independent, run in parallel):**
+
+1. `lint-and-format` — `eslint .` + `prettier --check .`. Neither existed
+   as a working command before this: `eslint` itself was never installed
+   despite `eslint.config.mjs` existing, and Prettier wasn't configured at
+   all. Both fixed as part of this work (see `IMPLEMENTATION.md`).
+2. `typecheck` — `tsc --noEmit` (new script; didn't exist before).
+3. `build` — `npm run build`. Next.js's production build also runs a full
+   TypeScript typecheck, so this is somewhat redundant with (2) — kept
+   anyway since it catches build-config issues typecheck alone wouldn't
+   (e.g. the `swcMinify` no-op this work also found and removed).
+4. `secret-scan` — `gitleaks/gitleaks-action@v3`, same as the backend.
+   Personal-account repo, no license key needed.
+5. `dependency-audit` — `npm audit --audit-level=high`. Non-blocking on
+   `dev`, blocking on `staging`/`main`. **Found and fixed a critical
+   Next.js RCE plus several high-severity transitive vulnerabilities** at
+   implementation time — see `IMPLEMENTATION.md` for the full list and why
+   the fix was a major-version bump (Next 15→16) rather than a suppression.
+6. `test` — **still not added, on purpose.** A green check that runs zero
+   tests is worse than no check — don't stand this up until Phase 1 lands
+   real testing tooling.
+
+**Action versions** (verified against the GitHub API at implementation
+time, not assumed): `actions/checkout@v7`, `actions/setup-node@v7`,
+`gitleaks/gitleaks-action@v3`.
+
+### `docker.yml` — post-merge only, not every PR
+
+Same design as the backend's (see its `PLAN.md` §16): build → Trivy scan
+(fails on CRITICAL/HIGH) → push to GHCR only if the scan passed, triggered
+on `push` to `staging`/`main` only. Needs `next.config.ts`'s new
+`output: "standalone"` (this repo had no Docker support at all before —
+added a multi-stage `Dockerfile` alongside it as part of this work).
+
+### Explicitly not built here — needs infrastructure decisions first
+
+Same two things as the backend, for the same reason: `deploy-*.yml`
+workflows (no hosting provider/accounts decided yet) and Playwright E2E
+(nothing meaningful to test until there's a real login flow — Phase 3).
+
+- **Branch protection:** once the workflow files exist, the user needs to
+  mark the CI jobs "required" on `dev`, `staging`, and `main` in GitHub's
   repo settings — a repo-admin action, not something committable in a
   workflow file.
-
-See the backend's `PLAN.md` §16 for its (larger, real-Postgres-backed)
-version of this same plan — the two aren't identical because this repo has
-no database and no tests yet.
 
 ### Phase 1 — Layout & UI foundation, ported from `RIS-app-frontend` (no backend connection)
 
@@ -132,6 +163,7 @@ the real components behind it. That makes this closer to "restore the real
 components" than "port a foreign design."
 
 **Ported as-is (generic, no RIS-domain content in them):**
+
 - `DataTable.tsx` — column config, sort callback, mobile-card responsive
   layout, skeleton loading, empty state. Needs zero changes to later serve
   Users/Roles pages.
@@ -144,6 +176,7 @@ components" than "port a foreign design."
   doesn't); take the superset.
 
 **Ported as a pattern, content replaced:**
+
 - `ClientLayout.tsx` — the composition order (`ThemeProvider` →
   `SidebarProvider` → `QueryClientProvider` → `AuthProvider` → `ToastStack`
   → `AuthGuard`) and the `AuthGuard` logic itself (public-route allowlist,
@@ -175,6 +208,7 @@ components" than "port a foreign design."
   until Phase 3.
 
 **Explicitly NOT ported (so it's a decision, not forgotten scope):**
+
 - Every RIS-domain page: `/admin/*` (except users/roles), `/batches`,
   `/products`, `/orders`, `/lab`, `/maintenance-*`, `/eye-wash-*`,
   `/vehicle-lists`, `/restricted-component-inspection`, `/checklist-*`,
@@ -212,8 +246,8 @@ not just decided on paper.
 (`lib/backend.ts`?) that talks to the backend and normalizes the
 `{ data }` / `{ error }` envelope, a first Route Handler proxying one real
 endpoint end-to-end as a spike (`/api/v1/auth/me` is the simplest — no
-body, cookie-only). *(Revisit the proxy-vs-direct-CORS decision from §4
-Phase 1's flag before writing this.)*
+body, cookie-only). _(Revisit the proxy-vs-direct-CORS decision from §4
+Phase 1's flag before writing this.)_
 
 ### Phase 3 — Login
 

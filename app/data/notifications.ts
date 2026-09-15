@@ -32,7 +32,8 @@ export const notifications: Notification[] = [
     version: "2.4.5",
     date: "2026-04-20",
     title: "Real-Time Data Components",
-    description: "Added live metrics and real-time data integration capabilities",
+    description:
+      "Added live metrics and real-time data integration capabilities",
     type: "feature",
     changes: [
       "LiveMetrics component with real-time updates",
@@ -62,7 +63,8 @@ export const notifications: Notification[] = [
     version: "2.3.2",
     date: "2026-04-10",
     title: "Security Patch",
-    description: "Fixed theme context hydration issues and improved component stability",
+    description:
+      "Fixed theme context hydration issues and improved component stability",
     type: "security",
     changes: [
       "Fixed hydration mismatch in ThemeProvider",
