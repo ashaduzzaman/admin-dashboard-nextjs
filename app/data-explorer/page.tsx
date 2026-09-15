@@ -108,7 +108,9 @@ export default function DataExplorerPage() {
           pending: "bg-primary/20 text-primary",
         };
         return (
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}>
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}
+          >
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </span>
         );
@@ -144,7 +146,9 @@ export default function DataExplorerPage() {
         <div className="p-8 flex flex-col gap-8 overflow-y-auto">
           {/* Header */}
           <div>
-            <h1 className="text-4xl font-bold text-text-primary mb-2">Data Explorer</h1>
+            <h1 className="text-4xl font-bold text-text-primary mb-2">
+              Data Explorer
+            </h1>
             <p className="text-muted">Browse and analyze system data</p>
           </div>
 
@@ -152,7 +156,9 @@ export default function DataExplorerPage() {
           <div className="grid grid-cols-4 gap-4">
             <div className="glass-panel p-4 rounded-lg">
               <p className="text-muted text-sm mb-2">Total Records</p>
-              <p className="text-2xl font-bold text-text-primary">{data.length}</p>
+              <p className="text-2xl font-bold text-text-primary">
+                {data.length}
+              </p>
             </div>
             <div className="glass-panel p-4 rounded-lg">
               <p className="text-muted text-sm mb-2">Active Users</p>

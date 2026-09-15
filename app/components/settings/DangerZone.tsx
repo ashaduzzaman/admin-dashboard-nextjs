@@ -13,10 +13,14 @@ export default function DangerZone() {
   return (
     <div className="border-l-4 border-accent-error pl-4">
       <div className="flex items-start gap-3">
-        <span className="material-symbols-outlined text-accent-error text-2xl mt-1">warning</span>
+        <span className="material-symbols-outlined text-accent-error text-2xl mt-1">
+          warning
+        </span>
         <div className="flex flex-col gap-4 flex-1">
           <div>
-            <h3 className="text-lg font-bold text-accent-error mb-1">Danger Zone</h3>
+            <h3 className="text-lg font-bold text-accent-error mb-1">
+              Danger Zone
+            </h3>
             <p className="text-sm text-muted">
               Irreversible and destructive actions. Proceed with caution.
             </p>
@@ -24,8 +28,8 @@ export default function DangerZone() {
 
           <div className="pt-4 border-t border-accent-error/20">
             <p className="text-sm text-text-primary mb-4">
-              Deleting your workspace will permanently remove all associated data, API keys, and
-              configurations. This action cannot be undone.
+              Deleting your workspace will permanently remove all associated
+              data, API keys, and configurations. This action cannot be undone.
             </p>
 
             {!showConfirm ? (

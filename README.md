@@ -24,17 +24,19 @@ A modern SaaS admin dashboard built with Next.js 15, Tailwind CSS, and Material 
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -85,6 +87,7 @@ app/
 ## Build & Deploy
 
 Build for production:
+
 ```bash
 npm run build
 npm start
@@ -93,6 +96,7 @@ npm start
 ## Environment Variables
 
 Create a `.env.local` file if needed:
+
 ```bash
 # Add environment variables here
 ```

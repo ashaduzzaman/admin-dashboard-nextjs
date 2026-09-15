@@ -46,7 +46,10 @@ export default function DataTable({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={columns.length} className="text-center py-8 text-muted">
+                <td
+                  colSpan={columns.length}
+                  className="text-center py-8 text-muted"
+                >
                   <div className="flex items-center justify-center gap-2">
                     <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                     Loading...
@@ -55,7 +58,10 @@ export default function DataTable({
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="text-center py-8 text-muted">
+                <td
+                  colSpan={columns.length}
+                  className="text-center py-8 text-muted"
+                >
                   {emptyMessage}
                 </td>
               </tr>
@@ -66,7 +72,10 @@ export default function DataTable({
                   className="border-b border-surface-highlight/50 hover:bg-surface-highlight/20 transition-colors"
                 >
                   {columns.map((column) => (
-                    <td key={`${rowIndex}-${column.key}`} className="py-3 px-4 text-text-primary">
+                    <td
+                      key={`${rowIndex}-${column.key}`}
+                      className="py-3 px-4 text-text-primary"
+                    >
                       {column.render
                         ? column.render(row[column.key], row)
                         : String(row[column.key] || "-")}

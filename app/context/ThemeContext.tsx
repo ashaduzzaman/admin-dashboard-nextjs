@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 type Theme = "dark" | "light";
 type AccessibilityMode = "normal" | "high-contrast";
@@ -21,15 +27,20 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
-  const [accessibility, setAccessibility] = useState<AccessibilityMode>("normal");
+  const [accessibility, setAccessibility] =
+    useState<AccessibilityMode>("normal");
 
   useEffect(() => {
     // Check for stored preference first
     const storedTheme = localStorage.getItem("theme") as Theme | null;
-    const storedAccessibility = localStorage.getItem("accessibility") as AccessibilityMode | null;
+    const storedAccessibility = localStorage.getItem(
+      "accessibility",
+    ) as AccessibilityMode | null;
 
     // If no stored preference, detect system preference
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     const initial = storedTheme || (prefersDark ? "dark" : "light");
     const initialA11y = storedAccessibility || "normal";
 
@@ -86,7 +97,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, accessibility, toggleAccessibility }}>
+    <ThemeContext.Provider
+      value={{ theme, toggleTheme, accessibility, toggleAccessibility }}
+    >
       {children}
     </ThemeContext.Provider>
   );

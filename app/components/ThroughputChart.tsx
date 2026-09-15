@@ -35,12 +35,16 @@ export default function ThroughputChart() {
           <div className="relative size-24 flex items-center justify-center">
             <div className="absolute inset-0 border-2 border-primary/20 rounded-full animate-[ping_3s_linear_infinite]"></div>
             <div className="absolute inset-4 border-2 border-primary/40 rounded-full animate-[ping_2s_linear_infinite]"></div>
-            <span className="material-symbols-outlined text-primary text-4xl">sensors</span>
+            <span className="material-symbols-outlined text-primary text-4xl">
+              sensors
+            </span>
           </div>
           <p className="text-text-primary font-mono text-sm tracking-tight">
             ANALYZING SIGNAL INTERCEPT...
           </p>
-          <p className="text-muted text-xs">Awaiting primary data signals from global endpoints</p>
+          <p className="text-muted text-xs">
+            Awaiting primary data signals from global endpoints
+          </p>
         </div>
       </div>
     </div>

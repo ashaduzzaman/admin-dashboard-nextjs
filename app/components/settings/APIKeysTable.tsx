@@ -51,15 +51,26 @@ export default function APIKeysTable() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-surface-highlight">
-              <th className="text-left py-3 px-4 text-muted font-semibold">Key Name</th>
-              <th className="text-left py-3 px-4 text-muted font-semibold">Secret Key</th>
-              <th className="text-left py-3 px-4 text-muted font-semibold">Created</th>
-              <th className="text-left py-3 px-4 text-muted font-semibold">Actions</th>
+              <th className="text-left py-3 px-4 text-muted font-semibold">
+                Key Name
+              </th>
+              <th className="text-left py-3 px-4 text-muted font-semibold">
+                Secret Key
+              </th>
+              <th className="text-left py-3 px-4 text-muted font-semibold">
+                Created
+              </th>
+              <th className="text-left py-3 px-4 text-muted font-semibold">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {keys.map((key) => (
-              <tr key={key.id} className="border-b border-surface-highlight/50 hover:bg-surface-highlight/20">
+              <tr
+                key={key.id}
+                className="border-b border-surface-highlight/50 hover:bg-surface-highlight/20"
+              >
                 <td className="py-3 px-4 text-text-primary">{key.name}</td>
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-2">
@@ -85,14 +96,18 @@ export default function APIKeysTable() {
                       className="text-muted hover:text-primary transition-colors"
                       title="Copy"
                     >
-                      <span className="material-symbols-outlined text-sm">content_copy</span>
+                      <span className="material-symbols-outlined text-sm">
+                        content_copy
+                      </span>
                     </button>
                     <button
                       onClick={() => deleteKey(key.id)}
                       className="text-muted hover:text-accent-error transition-colors"
                       title="Delete"
                     >
-                      <span className="material-symbols-outlined text-sm">delete</span>
+                      <span className="material-symbols-outlined text-sm">
+                        delete
+                      </span>
                     </button>
                   </div>
                 </td>

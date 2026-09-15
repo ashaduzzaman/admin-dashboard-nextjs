@@ -10,14 +10,16 @@ export default function NotificationsPanel() {
 
   useEffect(() => {
     // Load dismissed notifications from localStorage
-    const dismissedNotifications = localStorage.getItem("dismissedNotifications");
+    const dismissedNotifications = localStorage.getItem(
+      "dismissedNotifications",
+    );
     if (dismissedNotifications) {
       setDismissed(new Set(JSON.parse(dismissedNotifications)));
     }
 
     // Count unread notifications
     const newNotifications = notifications.filter(
-      (n) => n.isNew && !dismissed.has(n.id)
+      (n) => n.isNew && !dismissed.has(n.id),
     ).length;
     setUnreadCount(newNotifications);
   }, [dismissed]);
@@ -58,7 +60,10 @@ export default function NotificationsPanel() {
     const newDismissed = new Set(dismissed);
     newDismissed.add(id);
     setDismissed(newDismissed);
-    localStorage.setItem("dismissedNotifications", JSON.stringify(Array.from(newDismissed)));
+    localStorage.setItem(
+      "dismissedNotifications",
+      JSON.stringify(Array.from(newDismissed)),
+    );
   };
 
   return (
@@ -79,12 +84,16 @@ export default function NotificationsPanel() {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-96 glass-panel rounded-lg shadow-xl z-50 max-h-[600px] overflow-y-auto">
           <div className="sticky top-0 bg-surface/80 backdrop-blur border-b border-surface-highlight p-4">
-            <h3 className="text-lg font-bold text-text-primary">Notifications</h3>
+            <h3 className="text-lg font-bold text-text-primary">
+              Notifications
+            </h3>
           </div>
 
           <div className="p-4 space-y-3">
             {recentNotifications.length === 0 ? (
-              <p className="text-center text-muted py-8">No notifications available</p>
+              <p className="text-center text-muted py-8">
+                No notifications available
+              </p>
             ) : (
               recentNotifications.map((notification) => (
                 <div
@@ -97,7 +106,9 @@ export default function NotificationsPanel() {
                 >
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex items-start gap-2 flex-1">
-                      <span className={`material-symbols-outlined text-sm mt-0.5 ${getTypeColor(notification.type)}`}>
+                      <span
+                        className={`material-symbols-outlined text-sm mt-0.5 ${getTypeColor(notification.type)}`}
+                      >
                         {getTypeIcon(notification.type)}
                       </span>
                       <div className="flex-1">
@@ -105,14 +116,19 @@ export default function NotificationsPanel() {
                           <h4 className="font-semibold text-text-primary text-sm">
                             {notification.title}
                           </h4>
-                          <span className="text-xs text-muted">{notification.version}</span>
-                          {notification.isNew && !dismissed.has(notification.id) && (
-                            <span className="px-1.5 py-0.5 text-xs font-bold bg-primary text-background-dark rounded-full">
-                              NEW
-                            </span>
-                          )}
+                          <span className="text-xs text-muted">
+                            {notification.version}
+                          </span>
+                          {notification.isNew &&
+                            !dismissed.has(notification.id) && (
+                              <span className="px-1.5 py-0.5 text-xs font-bold bg-primary text-background-dark rounded-full">
+                                NEW
+                              </span>
+                            )}
                         </div>
-                        <p className="text-xs text-muted mt-0.5">{notification.date}</p>
+                        <p className="text-xs text-muted mt-0.5">
+                          {notification.date}
+                        </p>
                       </div>
                     </div>
                     {notification.isNew && !dismissed.has(notification.id) && (
@@ -121,11 +137,15 @@ export default function NotificationsPanel() {
                         className="text-muted hover:text-text-primary transition-colors"
                         title="Dismiss"
                       >
-                        <span className="material-symbols-outlined text-sm">close</span>
+                        <span className="material-symbols-outlined text-sm">
+                          close
+                        </span>
                       </button>
                     )}
                   </div>
-                  <p className="text-xs text-text-primary mb-2">{notification.description}</p>
+                  <p className="text-xs text-text-primary mb-2">
+                    {notification.description}
+                  </p>
                   <details className="group">
                     <summary className="cursor-pointer text-xs text-primary hover:underline">
                       View changes

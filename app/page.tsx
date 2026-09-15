@@ -23,11 +23,14 @@ export default function Dashboard() {
                 Command Center
               </h2>
               <p className="text-muted max-w-xl">
-                Real-time system health, throughput metrics, and global performance monitoring.
+                Real-time system health, throughput metrics, and global
+                performance monitoring.
               </p>
             </div>
             <button className="px-4 py-2 border border-surface-highlight rounded-lg text-sm font-semibold hover:bg-surface-highlight transition-all flex items-center gap-2">
-              <span className="material-symbols-outlined text-lg">calendar_today</span>
+              <span className="material-symbols-outlined text-lg">
+                calendar_today
+              </span>
               Last 24 Hours
             </button>
           </div>
@@ -41,7 +44,12 @@ export default function Dashboard() {
               positive
               chart
             />
-            <MetricCard title="Active Nodes" value="48/50" change="2.1%" positive={false} />
+            <MetricCard
+              title="Active Nodes"
+              value="48/50"
+              change="2.1%"
+              positive={false}
+            />
             <MetricCard
               title="Avg Latency"
               value="24ms"
@@ -49,7 +57,12 @@ export default function Dashboard() {
               positive={false}
               chart
             />
-            <MetricCard title="Error Rate" value="0.04%" change="STABLE" positive />
+            <MetricCard
+              title="Error Rate"
+              value="0.04%"
+              change="STABLE"
+              positive
+            />
           </div>
 
           {/* System Performance Detail Section */}

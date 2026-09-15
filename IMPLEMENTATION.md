@@ -4,6 +4,7 @@
 > Status legend: `[ ]` pending, `[~]` in progress, `[x]` done, `[!]` blocked/deviation (explained inline).
 
 ## Assessment & planning (preamble — not a numbered phase)
+
 - [x] Read the backend repo's `CLAUDE.md`/`PLAN.md`/`IMPLEMENTATION.md`/`MODULES.md` to understand what actually exists to integrate against
 - [x] Audited this repo's actual state: confirmed zero backend integration — no API client, no env vars, no auth pages, all data hardcoded or client-simulated
 - [x] Identified the domain mismatch: this template's content (infra monitoring: throughput, system alerts) doesn't correspond to any backend module; only Users/Roles/Auth map cleanly
@@ -16,15 +17,29 @@
 - [x] **Corrected mid-project:** CI/CD moved from last phase to Phase 0 — it has to exist before the first gated PR in the new three-tier `feature/* → dev → staging → main` model, not after other phases have already merged without it. All phase numbers below shifted by one accordingly.
 
 ## Phase 0 — CI/CD (GitHub Actions gating every PR)
-See `PLAN.md` §4 Phase 0. Its own `feature/ci-github-actions` branch, per the git-workflow rule — implemented before Phase 1.
-- [x] `.github/workflows/ci.yml`: `pull_request` → `[dev, staging, main]`
-- [x] `lint` job
-- [x] `build` job (Next.js build = free typecheck)
+
+See `PLAN.md` §4 Phase 0. Its own `feature/ci-github-actions` branch, per the git-workflow rule — implemented before Phase 1. Expanded past the first draft after the user asked for the fuller foundation+dev+staging tier before merging.
+
+`.github/workflows/ci.yml` — `pull_request` → `[dev, staging, main]`, `concurrency` with `cancel-in-progress`:
+
+- [x] `lint-and-format` job (`eslint .` + `prettier --check .`)
+- [x] `typecheck` job (new `tsc --noEmit` script — didn't exist before)
+- [x] `build` job
+- [x] `secret-scan` job (gitleaks v3)
+- [x] `dependency-audit` job (non-blocking on `dev`, blocking on `staging`/`main`)
 - [ ] `test` job — **not added yet, on purpose** — this repo has zero test tooling until Phase 1 lands Vitest + RTL; add it then
-- [ ] **Not yet verified against a real PR** — pushed but unconfirmed until GitHub Actions actually runs it once
+
+`.github/workflows/docker.yml` — `push` to `[staging, main]` only:
+
+- [x] Multi-stage `Dockerfile` (new — this repo had no Docker support at all) using `next.config.ts`'s new `output: "standalone"`
+- [x] Build → Trivy scan → push to GHCR only if the scan passed (same pattern as the backend)
+
+- [ ] **Not yet verified against a real PR/push** — pushed but unconfirmed until GitHub Actions actually runs it once
 - [ ] Tell the user to mark checks as required on `dev`, `staging`, and `main` in GitHub repo settings — **immediate next step once the PR merges**
+- [ ] **Deliberately not built — needs the user's infrastructure decisions first:** `deploy-*.yml` workflows and Playwright E2E (no real login flow to test yet — Phase 3)
 
 ## Phase 1 — Layout & UI foundation, ported from `RIS-app-frontend`
+
 No backend connection in this phase — see `PLAN.md` §4 Phase 1 for the full list of what's ported as-is, what's ported as a pattern with content replaced, and what's explicitly not ported.
 
 - [ ] Add `@tanstack/react-query` dependency; decide on `framer-motion` (only if genuinely used by ported pieces)
@@ -41,38 +56,46 @@ No backend connection in this phase — see `PLAN.md` §4 Phase 1 for the full l
 - [ ] Confirm the app runs standalone (`npm run dev`), looks right, zero calls to `multi-tenant-express-api`
 
 ## Phase 2 — Plumbing
+
 - [ ] `API_BASE_URL` env var + `.env.local.example`
 - [ ] Typed fetch helper normalizing the backend's `{ data }` / `{ error }` envelope
 - [ ] Spike: one real Route Handler proxying `GET /api/v1/auth/me` end-to-end, cookie relay verified manually
 
 ## Phase 3 — Login
+
 - [ ] Login page (tenantSlug + email + password)
 - [ ] Route handler → backend `/auth/login`, relays `Set-Cookie`
 - [ ] Test: wrong tenant/email/password all produce the same generic error in the UI
 
 ## Phase 4 — Register
+
 - [ ] Register page (tenantName, tenantSlug, email, password, name)
 - [ ] Route handler → backend `/auth/register`
 
 ## Phase 5 — Authenticated shell
+
 - [ ] Session check (middleware or layout-level) calling `/auth/me`, redirect to `/login` on failure
 - [ ] `Sidebar` user section populated from real identity
 - [ ] Permissions available to gate nav items / action buttons
 
 ## Phase 6 — Logout
+
 - [ ] Clear session, redirect to `/login`
 
 ## Phase 7 — Users page (repurposed Data Explorer)
+
 - [ ] Real list via existing `DataTable` component
 - [ ] Create/edit/delete forms, gated on `users:create`/`users:update`/`users:delete`
 - [ ] Password-change action (self or `users:update`)
 
 ## Phase 8 — Roles page (repurposed Settings)
+
 - [ ] List roles + permission catalog
 - [ ] Create/edit (permission checkboxes)
 - [ ] Delete, surfacing the backend's real 403 (system role) / 409 (users assigned) as real UI states
 
 ## Phase 9 — Cleanup pass
+
 - [ ] Mark not-yet-backed Settings sections (API Keys, Access Control, Danger Zone) as clearly unfinished, not functional-looking
 - [ ] Mark parked widgets (`ThroughputChart`, `SystemAlerts`, `LiveMetrics`) the same way, or remove from primary nav until a backing module exists
 
@@ -97,6 +120,32 @@ No backend connection in this phase — see `PLAN.md` §4 Phase 1 for the full l
      beats a redesign of code that's about to be replaced.
   4. `next.config.ts` had `swcMinify: true`, a Next.js 15 no-op that
      `next build` now warns about. Removed.
+
+- **Found and fixed a critical security issue while wiring up `npm audit` as
+  a CI gate:** `next: "^15.0.0"` resolved to a version range with a
+  **critical** Next.js RCE advisory plus several high-severity transitive
+  vulnerabilities (postcss, sharp, nanoid). `npm audit fix` alone resolved
+  most of them but the last (a `postcss` vuln bundled inside `next` itself)
+  required the major-version bump `next@16.3.5` that `npm audit fix --force`
+  proposed. Took it — this template has barely been started (Phase 0/1 not
+  landed yet), so the blast radius of a major bump is about as small as it
+  will ever be; deferring it would only make the eventual upgrade more
+  expensive. Verified `typecheck`/`lint`/`build` all still pass after.
+- **The Next 15→16 bump broke `next lint` outright** (it was already
+  deprecated, and v16 removed it — confirmed by the exact error: "Invalid
+  project directory provided"). Switched the `lint` script to plain
+  `eslint .`, which needed one more fix: `next lint` used to auto-exclude
+  `.next/`, and the plain ESLint CLI doesn't, so it started linting Next's
+  own generated type-checking output (3000+ false-positive errors). Added
+  an explicit `ignores` entry to `eslint.config.mjs`.
+- **Added Prettier from scratch** (`format`/`format:check` scripts,
+  `.prettierignore`) since it didn't exist at all and the CI plan calls for
+  a format-check gate. Ran `prettier --write .` once across the whole repo
+  (37 files, whitespace/quote-style only) so the new `format:check` gate
+  doesn't fail on day one; re-verified `typecheck`/`lint`/`build` after.
+- **Added a `Dockerfile` + `.dockerignore`** (neither existed) using
+  Next.js's standard multi-stage `output: "standalone"` pattern, to support
+  the new `docker.yml` workflow.
 
 - **Renamed the original "Phase 0 — Assessment & planning" to a non-numbered
   preamble**, then **shifted every phase number by one** when CI/CD was

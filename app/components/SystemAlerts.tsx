@@ -70,16 +70,24 @@ export default function SystemAlerts() {
               }`}
             >
               <div className={styles.textColor}>
-                <span className="material-symbols-outlined text-xl">{styles.icon}</span>
+                <span className="material-symbols-outlined text-xl">
+                  {styles.icon}
+                </span>
               </div>
               <div className="flex flex-col gap-1">
-                <p className={`text-xs font-bold uppercase tracking-widest ${styles.textColor}`}>
+                <p
+                  className={`text-xs font-bold uppercase tracking-widest ${styles.textColor}`}
+                >
                   {alert.title}
                 </p>
-                <p className={`text-sm ${isLog ? "text-muted group-hover:text-text-primary" : "text-text-primary"}`}>
+                <p
+                  className={`text-sm ${isLog ? "text-muted group-hover:text-text-primary" : "text-text-primary"}`}
+                >
                   {alert.message}
                 </p>
-                <p className="text-[10px] font-mono text-muted">{alert.timestamp}</p>
+                <p className="text-[10px] font-mono text-muted">
+                  {alert.timestamp}
+                </p>
               </div>
             </div>
           );
