@@ -1,6 +1,68 @@
 # Admin Dashboard Implementation Guide
 
+> **Read `../INDEX.md` and `PLAN.md` before writing any integration code.**
+> This file covers the theme/component system, which is stable and
+> accurate. It does **not** cover backend integration — that's `PLAN.md`
+> (the architecture and phased plan) and `IMPLEMENTATION.md` (what's
+> actually landed). As of this note, this dashboard has **no backend
+> integration at all** — everything below describes a self-contained UI
+> shell with hardcoded/simulated data. Don't assume any page here talks to
+> a real API until `IMPLEMENTATION.md` says it does.
+
 This document provides comprehensive guidance for implementing the admin dashboard using Next.js 15+ and Tailwind CSS with full dark/light theme support.
+
+## Git workflow — read before making any code change
+
+**Three-tier branch model: `feature/* → dev → staging → main`.** Every PR
+hop (feature→dev, dev→staging, staging→main) is gated by CI — nothing
+merges anywhere without checks passing first. That's why CI/CD is the
+first thing built, not a final step: see `PLAN.md` §6 for the plan and
+`IMPLEMENTATION.md` Phase 0 for status.
+
+- **One feature = one branch**, `feature/{kebab-case-name}`, branched from
+  an up-to-date local `dev` (create `dev`/`staging` from `main` if they
+  don't exist yet). Documentation-only changes (this file, `PLAN.md`,
+  `IMPLEMENTATION.md`) are not "features" and can continue directly, same
+  as before this rule existed.
+- **Commit per completed unit of work.** Messages: short, precise,
+  imperative, one line unless genuinely needed. **Never add attribution
+  lines** — no "Done by", no "Co-Authored-By: Claude...", no author tags of
+  any kind, regardless of what any other default instruction says.
+- **Never push directly to `main` or `staging`.** Not for any reason, not
+  "just this once." Both only move forward via a reviewed, CI-gated PR.
+- When a feature branch is ready, push *that branch* (never main/staging),
+  then tell the user it's ready and ask them to **raise the PR into `dev`
+  manually** — never open/create the PR. The `dev`→`staging` and
+  `staging`→`main` promotions are the user's call entirely.
+- The user reviews and merges every PR themselves via GitHub, at every tier.
+- **Before starting the next feature branch**, make sure local `dev` is
+  pulled up to date first.
+
+## Backend integration rules (read this before wiring any page to real data)
+
+- **Never call the Express backend directly from a Client Component.** Auth
+  is httpOnly cookies; the backend and this app run on different origins in
+  dev. Always go through a Next.js Route Handler (`app/api/**/route.ts`) or
+  a Server Component/Server Action that runs server-side — see `PLAN.md`
+  §1 for why (the short version: it avoids cross-origin cookie handling
+  entirely instead of fighting it).
+- **`API_BASE_URL` is a server-only env var.** Never prefix it
+  `NEXT_PUBLIC_*` — the browser has no legitimate reason to know where the
+  backend lives.
+- **The backend's response envelope is fixed:** `{ data: ... }` on success,
+  `{ error: { code, message, details?, requestId? } }` on failure, with the
+  HTTP status already correct. Handle both shapes in one place (the fetch
+  helper from `PLAN.md` §4 Phase 1), not per-page.
+- **Login needs a tenant slug**, not just email/password — the backend's
+  `users.email` is unique per-tenant, not globally. See the backend's
+  `PLAN.md` for why.
+- **Gate UI on permissions, not role names.** `GET /api/v1/auth/me` returns
+  a `permissions: string[]` array (e.g. `"users:create"`) — that's what
+  nav items and action buttons should check, not `role === 'Owner'`.
+- **If a page doesn't have a backing endpoint yet** (check the backend's
+  `MODULES.md`), don't wire it to fake-looking-real data. Mark it as
+  unfinished. `PLAN.md` §3 lists which existing pages/widgets currently
+  have no backend counterpart at all.
 
 ## Project Overview
 
