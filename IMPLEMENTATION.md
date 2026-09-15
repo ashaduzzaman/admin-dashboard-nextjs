@@ -16,12 +16,13 @@
 - [x] **Corrected mid-project:** CI/CD moved from last phase to Phase 0 — it has to exist before the first gated PR in the new three-tier `feature/* → dev → staging → main` model, not after other phases have already merged without it. All phase numbers below shifted by one accordingly.
 
 ## Phase 0 — CI/CD (GitHub Actions gating every PR)
-See `PLAN.md` §4 Phase 0. Its own `feature/ci-github-actions` branch, per the git-workflow rule — implement this before Phase 1.
-- [ ] `.github/workflows/ci.yml`: `pull_request` → `[dev, staging, main]`
-- [ ] `lint` job
-- [ ] `build` job (Next.js build = free typecheck)
-- [ ] `test` job — **only added once Phase 1's testing tooling actually exists** (don't stand up an empty green check)
-- [ ] Tell the user to mark checks as required on `dev`, `staging`, and `main` in GitHub repo settings (repo-admin action, not committable)
+See `PLAN.md` §4 Phase 0. Its own `feature/ci-github-actions` branch, per the git-workflow rule — implemented before Phase 1.
+- [x] `.github/workflows/ci.yml`: `pull_request` → `[dev, staging, main]`
+- [x] `lint` job
+- [x] `build` job (Next.js build = free typecheck)
+- [ ] `test` job — **not added yet, on purpose** — this repo has zero test tooling until Phase 1 lands Vitest + RTL; add it then
+- [ ] **Not yet verified against a real PR** — pushed but unconfirmed until GitHub Actions actually runs it once
+- [ ] Tell the user to mark checks as required on `dev`, `staging`, and `main` in GitHub repo settings — **immediate next step once the PR merges**
 
 ## Phase 1 — Layout & UI foundation, ported from `RIS-app-frontend`
 No backend connection in this phase — see `PLAN.md` §4 Phase 1 for the full list of what's ported as-is, what's ported as a pattern with content replaced, and what's explicitly not ported.
@@ -76,6 +77,26 @@ No backend connection in this phase — see `PLAN.md` §4 Phase 1 for the full l
 - [ ] Mark parked widgets (`ThroughputChart`, `SystemAlerts`, `LiveMetrics`) the same way, or remove from primary nav until a backing module exists
 
 ## Deviations / decisions made during implementation
+
+- **Fixed three pre-existing, never-actually-run bugs while adding the
+  `build`/`lint` CI jobs** — this repo had never had `npm run lint` or
+  `npm run build` run to completion before:
+  1. `eslint.config.mjs` referenced `next/core-web-vitals`/`next/typescript`
+     via `@eslint/eslintrc`'s `FlatCompat`, but `eslint`, `eslint-config-next`,
+     and `@eslint/eslintrc` were never added to `package.json` — `npm run lint`
+     failed immediately with "ESLint must be installed." Added all three.
+  2. `NotificationsPanel.tsx` had an unused `Link` import and an unused
+     `unreadNotifications` variable — `next build`'s typecheck (`noUnusedLocals`)
+     failed on the unused import. Removed both (the component still works
+     identically; neither was read anywhere).
+  3. `data-explorer/page.tsx` passed a typed `User[]` where `DataTable`
+     expects `Record<string, unknown>[]` — structurally incompatible
+     because `User` has no index signature. Cast at the call site rather
+     than weakening `DataTable`'s prop type or `User`'s definition; this
+     whole page gets replaced in Phase 1 anyway, so a minimal, honest cast
+     beats a redesign of code that's about to be replaced.
+  4. `next.config.ts` had `swcMinify: true`, a Next.js 15 no-op that
+     `next build` now warns about. Removed.
 
 - **Renamed the original "Phase 0 — Assessment & planning" to a non-numbered
   preamble**, then **shifted every phase number by one** when CI/CD was

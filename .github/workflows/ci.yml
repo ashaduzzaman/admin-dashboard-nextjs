@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, staging, main]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  # No `test` job yet — this repo has zero test tooling as of this workflow.
+  # Add one here once Phase 1 (see PLAN.md/IMPLEMENTATION.md) lands Vitest +
+  # React Testing Library. A job that runs zero tests is worse than no job.

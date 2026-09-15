@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { notifications } from "@/app/data/notifications";
-import Link from "next/link";
 
 export default function NotificationsPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +23,6 @@ export default function NotificationsPanel() {
   }, [dismissed]);
 
   const recentNotifications = notifications.slice(0, 4);
-  const unreadNotifications = recentNotifications.filter((n) => n.isNew && !dismissed.has(n.id));
 
   const getTypeColor = (type: string) => {
     switch (type) {

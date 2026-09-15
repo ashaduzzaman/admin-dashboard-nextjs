@@ -179,7 +179,7 @@ export default function DataExplorerPage() {
             <h2 className="text-xl font-bold text-text-primary mb-4">Users</h2>
             <DataTable
               columns={columns}
-              data={data}
+              data={data as unknown as Record<string, unknown>[]}
               emptyMessage="No users found"
             />
           </div>
